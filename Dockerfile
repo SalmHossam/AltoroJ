@@ -5,7 +5,7 @@ RUN apt-get install -y git unzip && \
     mkdir /opt/gradle && \
     unzip -d /opt/gradle gradle-3.0-bin.zip && \
     rm gradle-3.0-bin.zip
-WORKDIR /AltoroJ-AltoroJ-3.2/AltoroJ-AltoroJ-3.2/
+WORKDIR /AltoroJ-AltoroJ-3.2/
 COPY AltoroJ-AltoroJ-3.2/. .
 RUN --mount=type=cache,target=/root/.gradle/caches \
     /opt/gradle/gradle-3.0/bin/gradle build && cp ./build/libs/altoromutual.war /usr/local/tomcat/webapps
