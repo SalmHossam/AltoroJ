@@ -99,7 +99,20 @@ public class SurveyServlet extends HttpServlet {
         response.getWriter().flush();
 
     }
+private boolean isValidStep(String currentStep, String previousStep) {
+    // Define valid steps based on the previous step
+    Map<String, List<String>> validSteps = new HashMap<>();
+    validSteps.put("", Arrays.asList("a"));
+    validSteps.put("a", Arrays.asList("b"));
+    validSteps.put("b", Arrays.asList("c"));
+    validSteps.put("c", Arrays.asList("d"));
+    validSteps.put("d", Arrays.asList("email"));
+    validSteps.put("email", Arrays.asList("done"));
+    validSteps.put("done", Collections.emptyList());
 
+    // Check if the current step is valid based on the previous step
+    return validSteps.get(previousStep).contains(currentStep);
+}
     // Method to escape HTML special characters
     private String escapeHtml(String input) {
         return input.replaceAll("&", "&amp;")
