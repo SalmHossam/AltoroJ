@@ -29,7 +29,7 @@ IBM AltoroJ
 		<%@page import="com.ibm.security.appscan.altoromutual.util.ServletUtil"%>
 		<div class="fl" style="width: 99%;">
 			<h1>Search News Articles</h1>
-			<form id="QueryXpath" method="get" action="<%=request.getRequestURL()%>">
+			<form id="QueryXpath" method="get" action="<%= org.apache.commons.text.StringEscapeUtils.escapeHtml4(request.getRequestURL().toString()) %>">
 			  Search our news articles database
 			  <br /><br />
 				<input type="hidden" id=content" name="content" value="queryxpath.jsp"/>
