@@ -46,9 +46,24 @@ public class AdminServlet extends HttpServlet {
 			if (username == null || acctType == null || username.trim().length() == 0 || acctType.trim().length() == 0)
 				message = "An error has occurred. Please try again later.";
 			else {
-				String error = DBUtil.addAccount(username, acctType);
-				if (error != null)
-					message = error;
+				String error = null;
+				try {
+				    // Attempt to add the account
+				    DBUtil.addAccount(
+				        org.apache.commons.text.StringEscapeUtils.escapeHtml4(username),
+				        org.apache.commons.text.StringEscapeUtils.escapeHtml4(acctType)
+				    );
+				} catch (Exception e) {
+				    // If an exception occurs, capture the error message
+				    error = e.getMessage();
+				}
+				
+				// Check if there was an error
+				if (error != null) {
+				    // Handle the error, log it, or inform the user
+				    System.out.println("Error adding account: " + error);
+				}
+
 			}
 		}
 		
