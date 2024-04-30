@@ -94,8 +94,18 @@ public class SurveyServlet extends HttpServlet {
             request.getSession().setAttribute("surveyStep", step);
         }
         response.setContentType("text/html");
-        response.getWriter().write(content);
+        // Fixed XSS by escaping content before writing it to the response
+        response.getWriter().write(escapeHtml(content));
         response.getWriter().flush();
 
+    }
+
+    // Method to escape HTML special characters
+    private String escapeHtml(String input) {
+        return input.replaceAll("&", "&amp;")
+                    .replaceAll("<", "&lt;")
+                    .replaceAll(">", "&gt;")
+                    .replaceAll("\"", "&quot;")
+                    .replaceAll("'", "&#39;");
     }
 }
