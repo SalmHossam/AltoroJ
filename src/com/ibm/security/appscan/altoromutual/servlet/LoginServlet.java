@@ -74,9 +74,13 @@ public class LoginServlet extends HttpServlet {
 		try {
 			username = request.getParameter("uid");
 			if (username != null)
+				// Sanitize the username to remove CR/LF characters
+			        username = sanitizeInput(username);
 				username = username.trim().toLowerCase();
 			
 			String password = request.getParameter("passw");
+			// Sanitize the password to remove CR/LF characters
+		        password = sanitizeInput(password);
 			password = password.trim().toLowerCase(); //in real life the password usually is case sensitive and this cast would not be done
 			
 			if (!DBUtil.isValidUser(username, password)){
@@ -94,6 +98,11 @@ public class LoginServlet extends HttpServlet {
 			String sanitizedUsername = ServletUtil.sanitizeCookieValue(username);
 			Cookie accountCookie = new Cookie("username", sanitizedUsername);
 			accountCookie.setPath("/");
+
+			// Set HttpOnly and Secure flags for enhanced security
+			accountCookie.setHttpOnly(true);
+			accountCookie.setSecure(true);
+			
 			response.addCookie(accountCookie);
 			response.sendRedirect(request.getContextPath()+"/bank/main.jsp");
 			}
