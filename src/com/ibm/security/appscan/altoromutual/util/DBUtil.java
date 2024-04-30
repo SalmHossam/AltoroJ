@@ -470,8 +470,10 @@ public static boolean isValidUser(String user, String password) throws SQLExcept
 	public static String addAccount(String username, String acctType) {
 		try {
 			Connection connection = getConnection();
-			Statement statement = connection.createStatement();
-			statement.execute("INSERT INTO ACCOUNTS (USERID,ACCOUNT_NAME,BALANCE) VALUES ('"+username+"','"+acctType+"', 0)");
+			PreparedStatement statement = connection.prepareStatement("INSERT INTO ACCOUNTS (USERID, ACCOUNT_NAME, BALANCE) VALUES (?, ?, 0)");
+		        statement.setString(1, username);
+		        statement.setString(2, acctType);
+		        statement.executeUpdate();
 			return null;
 		} catch (SQLException e){
 			return e.toString();
