@@ -46,13 +46,24 @@ IBM AltoroJ
 		    <td>View Account Details:</td>
 		    <td align="left">
 			  <select size="1" name="listAccounts" id="listAccounts">
-				<% 
-				for (Account account : user.getAccounts()) {
-				    out.println("<option value=\"" + account.getAccountId() + "\">" + 
-				        "<c:out value=\"" + account.getAccountId() + "\"/> " + 
-				        "<c:out value=\"" + account.getAccountName() + "\"/></option>");
+				String error = null;
+				try {
+				    // Attempt to add the account
+				    DBUtil.addAccount(
+				        org.apache.commons.text.StringEscapeUtils.escapeHtml4(username),
+				        org.apache.commons.text.StringEscapeUtils.escapeHtml4(acctType)
+				    );
+				} catch (Exception e) {
+				    // If an exception occurs, capture the error message
+				    error = e.getMessage();
 				}
-				%>
+				
+				// Check if there was an error
+				if (error != null) {
+				    // Handle the error, log it, or inform the user
+				    System.out.println("Error adding account: " + error);
+				}
+
 
 			  </select>
 		      <input type="submit" id="btnGetAccount" value="   GO   ">
