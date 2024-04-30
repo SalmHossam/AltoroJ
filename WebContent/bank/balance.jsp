@@ -54,7 +54,7 @@ IBM AltoroJ
 		<!-- To modify account information do not connect to SQL source directly.  Make all changes
 		through the admin page. -->
 		
-		<h1>Account History - <%= htmlentities(accountName) %></h1>
+		<h1>Account History - <%= escape(accountName) %></h1>
 		
 		<table width="590" border="0">
 		  <tr>
