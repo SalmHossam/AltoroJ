@@ -73,15 +73,18 @@ public class LoginServlet extends HttpServlet {
 		
 		try {
 			username = request.getParameter("uid");
-			if (username != null)
-				// Sanitize the username to remove CR/LF characters
-			        username = sanitizeInput(username);
+			if (username != null){
+				 // Sanitize the username to remove CR/LF characters
+			        username = username.replaceAll("[\r\n]", "");
 				username = username.trim().toLowerCase();
-			
+			}
+			// Retrieve and sanitize the password parameter
 			String password = request.getParameter("passw");
-			// Sanitize the password to remove CR/LF characters
-		        password = sanitizeInput(password);
-			password = password.trim().toLowerCase(); //in real life the password usually is case sensitive and this cast would not be done
+			if (password != null) {
+				// Sanitize the password to remove CR/LF characters
+			        password = password.replaceAll("[\r\n]", "");
+			        password = password.trim().toLowerCase(); // In real life, password case sensitivity should not be handled this way
+			}
 			
 			if (!DBUtil.isValidUser(username, password)){
 				Log4AltoroJ.getInstance().logError("Login failed >>> User: " +username + " >>> Password: " + password);
