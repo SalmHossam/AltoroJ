@@ -47,10 +47,13 @@ IBM AltoroJ
 		    <td align="left">
 			  <select size="1" name="listAccounts" id="listAccounts">
 				<% 
-				for (Account account: user.getAccounts()){
-					out.println("<option value=\""+account.getAccountId()+"\" >" + account.getAccountId() + " " + account.getAccountName() + "</option>");
+				for (Account account : user.getAccounts()) {
+				    out.println("<option value=\"" + account.getAccountId() + "\">" + 
+				        "<c:out value=\"" + account.getAccountId() + "\"/> " + 
+				        "<c:out value=\"" + account.getAccountName() + "\"/></option>");
 				}
 				%>
+
 			  </select>
 		      <input type="submit" id="btnGetAccount" value="   GO   ">
 		    </td>
