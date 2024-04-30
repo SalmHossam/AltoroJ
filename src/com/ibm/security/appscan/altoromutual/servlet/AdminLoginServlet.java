@@ -38,18 +38,32 @@ public class AdminLoginServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String password = request.getParameter("password");
-		if (password == null){
-			response.sendRedirect(request.getContextPath()+"/admin/login.jsp");
-			return ;
-		} else if (!password.equals("Altoro1234")){
-			request.setAttribute("loginError", "Login failed.");
-			RequestDispatcher dispatcher = request.getRequestDispatcher("/admin/login.jsp");
-			dispatcher.forward(request, response);
-			return;
-		} else {
-			request.getSession(true).setAttribute(ServletUtil.SESSION_ATTR_ADMIN_KEY, ServletUtil.SESSION_ATTR_ADMIN_VALUE);
-			response.sendRedirect(request.getContextPath()+"/admin/admin.jsp");
-		}
-	}
+    String password = request.getParameter("password");
+    if (password == null || password.isEmpty()) {
+        response.sendRedirect(request.getContextPath() + "/admin/login.jsp");
+        return;
+    }
+
+    if (!password.equals("Altoro1234")) {
+        request.setAttribute("loginError", "Invalid password.");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/admin/login.jsp");
+        try {
+            dispatcher.forward(request, response);
+        } catch (ServletException | IOException e) {
+            // Handle exception if forward fails
+            e.printStackTrace();
+            response.sendRedirect(request.getContextPath() + "/admin/login.jsp");
+        }
+    } else {
+        try {
+            request.getSession(true).setAttribute(ServletUtil.SESSION_ATTR_ADMIN_KEY, ServletUtil.SESSION_ATTR_ADMIN_VALUE);
+            response.sendRedirect(request.getContextPath() + "/admin/admin.jsp");
+        } catch (IOException e) {
+            // Handle exception if redirect fails
+            e.printStackTrace();
+            response.sendRedirect(request.getContextPath() + "/admin/login.jsp");
+        }
+    }
+}
+
 }
