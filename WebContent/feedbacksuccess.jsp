@@ -34,12 +34,12 @@ IBM AltoroJ
         <div class="fl" style="width: 99%;">
             <h1>Thank You</h1>
             <p>Thank you for your comments<%= (request.getAttribute("message_feedback")!=null)?", "+StringEscapeUtils.escapeHtml((String)request.getAttribute("message_feedback")):"" %>.  They will be reviewed by our Customer Service staff and given the full attention that they deserve. 
-            <% String email = ServletUtil.sanitizeHtmlWithRegex((String) request.getParameter("email_addr")); 
-                boolean regExMatch = email != null && email.matches(ServletUtil.EMAIL_REGEXP);
+            <% String email = (String) request.getParameter("email_addr"); 
+                boolean regExMatch = email!=null && email.matches(ServletUtil.EMAIL_REGEXP);
                 if (email != null && email.trim().length() != 0 && regExMatch) {%> 
-                    Our reply will be sent to your email: <%= email %>
+                    Our reply will be sent to your email: <%= ServletUtil.sanitizeHtmlWithRegex(email.toLowerCase()) %>
             <% } else {%>
-                However, the email you gave is incorrect (<%= email %>) and you will not receive a response.
+                However, the email you gave is incorrect (<%= ServletUtil.sanitizeHtmlWithRegex(email.toLowerCase()) %>) and you will not receive a response.
             <% }%>
             </p>
             <% if (ServletUtil.isAppPropertyTrue("enableFeedbackRetention")){%>
