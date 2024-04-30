@@ -41,7 +41,7 @@ IBM AltoroJ
 		
 		<form method="post">
 		  <p>
-          	  Current Language: <%= org.apache.commons.lang.StringEscapeUtils.escapeHtml4(request.getParameter("lang")) %>
+		  Current Language: <%= org.apache.commons.text.StringEscapeUtils.escapeHtml4(request.getParameter("lang")==null ? "" : request.getParameter("lang")) %>
 		  </p>
 		
 		  <p>
