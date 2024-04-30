@@ -84,15 +84,15 @@ public class SurveyServlet extends HttpServlet {
 
         String referrer = request.getHeader("Referer");
         String allowedReferrer = request.getContextPath() + "/survey_questions.jsp" + ((previousStep != null && previousStep.trim().length() > 0) ? "?step=" + previousStep : "");
-        if (previousStep != null && (referrer == null ||
-                !referrer.endsWith(allowedReferrer) ||
-                request.getSession().getAttribute("surveyStep") == null ||
-                !request.getSession().getAttribute("surveyStep").equals(previousStep))) {
-            content = "<h1>Request Out of Order</h1>" +
-                    "<div width=\"99%\"><p>It appears that you attempted to skip or repeat some areas of this survey.  Please <a href=\"survey_questions.jsp\">return to the start page</a> to begin again.</p></div>";
-        } else {
-            request.getSession().setAttribute("surveyStep", step);
-        }
+        if (previousStep != null && (referrer == null || 
+                                !referrer.endsWith(allowedReferrer) || 
+                                step == null || step.isEmpty() || // Ensure step is not null or empty
+                                !isValidStep(step, previousStep))) { // Validate step
+    content = "<h1>Request Out of Order</h1>"+
+            "<div width=\"99%\"><p>It appears that you attempted to skip or repeat some areas of this survey.  Please <a href=\"survey_questions.jsp\">return to the start page</a> to begin again.</p></div>";
+} else {        
+    request.getSession().setAttribute("surveyStep", step);
+}
         response.setContentType("text/html");
         // Fixed XSS by escaping content before writing it to the response
         response.getWriter().write(escapeHtml(content));
