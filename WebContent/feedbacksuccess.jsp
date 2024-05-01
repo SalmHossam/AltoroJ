@@ -1,30 +1,7 @@
-<%@page import="com.ibm.security.appscan.altoromutual.model.Feedback"%>
-<%@page import="java.util.HashMap"%>
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
-
-<%
-/**
- This application is for demonstration use only. It contains known application security
-vulnerabilities that were created expressly for demonstrating the functionality of
-application security testing tools. These vulnerabilities may present risks to the
-technical environment in which the application is installed. You must delete and
-uninstall this demonstration application upon completion of the demonstration for
-which it is intended. 
-
-IBM DISCLAIMS ALL LIABILITY OF ANY KIND RESULTING FROM YOUR USE OF THE APPLICATION
-OR YOUR FAILURE TO DELETE THE APPLICATION FROM YOUR ENVIRONMENT UPON COMPLETION OF
-A DEMONSTRATION. IT IS YOUR RESPONSIBILITY TO DETERMINE IF THE PROGRAM IS APPROPRIATE
-OR SAFE FOR YOUR TECHNICAL ENVIRONMENT. NEVER INSTALL THE APPLICATION IN A PRODUCTION
-ENVIRONMENT. YOU ACKNOWLEDGE AND ACCEPT ALL RISKS ASSOCIATED WITH THE USE OF THE APPLICATION.
-
-IBM AltoroJ
-(c) Copyright IBM Corp. 2008, 2013 All Rights Reserved.
-*/
-%> 
-
-<%@page import="com.ibm.security.appscan.altoromutual.util.ServletUtil" errorPage="notfound.jsp"%>
-<%@page import="org.apache.commons.lang.StringEscapeUtils" errorPage="notfound.jsp"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+<%@ page import="com.ibm.security.appscan.altoromutual.model.Feedback" %>
+<%@ page import="com.ibm.security.appscan.altoromutual.util.ServletUtil" errorPage="notfound.jsp"%>
+<%@ page import="org.apache.commons.lang.StringEscapeUtils" %>
 
 <jsp:include page="header.jspf"/>
 
@@ -33,55 +10,57 @@ IBM AltoroJ
     <td valign="top" colspan="3" class="bb">
         <div class="fl" style="width: 99%;">
             <h1>Thank You</h1>
-            <p>Thank you for your comments<%= (request.getAttribute("message_feedback")!=null)?", "+StringEscapeUtils.escapeHtml((String)request.getAttribute("message_feedback")):"" %>.  They will be reviewed by our Customer Service staff and given the full attention that they deserve. 
-            <% String email = (String) request.getParameter("email_addr"); 
-                boolean regExMatch = email!=null && email.matches(ServletUtil.EMAIL_REGEXP);
-                if (email != null && email.trim().length() != 0 && regExMatch) {%> 
-                    Our reply will be sent to your email: <%= ServletUtil.sanitizeHtmlWithRegex(email.toLowerCase()) %>
-            <% } else {%>
-                However, the email you gave is incorrect (<%= ServletUtil.sanitizeHtmlWithRegex(email.toLowerCase()) %>) and you will not receive a response.
-            <% }%>
-            </p>
-            <% if (ServletUtil.isAppPropertyTrue("enableFeedbackRetention")){%>
-            <br><br>
-            <h3>Details of your feedback submission</h3>
-            <p>
+            <p>Thank you for your comments<%= (request.getAttribute("message_feedback")!=null)?", "+StringEscapeUtils.escapeHtml((String)request.getAttribute("message_feedback")):"" %>. They will be reviewed by our Customer Service staff and given the full attention that they deserve.</p>
             <% 
-            long feedbackId = -1;
-            Object feedbackIdObj = request.getAttribute("feedback_id");
-            if (feedbackIdObj != null && feedbackIdObj instanceof String) {
-                try {
-                    feedbackId = Long.parseLong((String)feedbackIdObj);
-                } catch (NumberFormatException e){
-                    // do nothing
-                }
-            }
-            
-            Feedback feedbackDetails = ServletUtil.getFeedback(feedbackId);
-            
-            if (feedbackDetails != null){
-                
+                String email = request.getParameter("email_addr"); 
+                if (email != null && !email.trim().isEmpty() && email.matches(ServletUtil.EMAIL_REGEXP)) { 
             %>
-                <table border=0>
-                  <tr>
-                    <td align=right>Your Name:</td>
-                    <td valign=top><%= StringEscapeUtils.escapeHtml(feedbackDetails.getName()) %></td>
-                  </tr>
-                  <tr>
-                    <td align=right>Your Email Address:</td>
-                    <td valign=top><%= StringEscapeUtils.escapeHtml(feedbackDetails.getEmail()) %></td>
-                  </tr>
-                  <tr>
-                    <td align=right>Subject:</td>
-                    <td valign=top><%= StringEscapeUtils.escapeHtml(feedbackDetails.getSubject()) %></td>
-                  </tr>
-                  <tr>
-                    <td align=right valign=top>Question/Comment:</td>
-                    <td><%= StringEscapeUtils.escapeHtml(feedbackDetails.getMessage()) %></td>
-                  </tr>
-                </table>
-            <% } %>
-            </p>
+                <p>Our reply will be sent to your email: <%= ServletUtil.sanitizeHtmlWithRegex(StringEscapeUtils.escapeHtml(email.toLowerCase())) %></p>
+            <% 
+                } else { 
+            %>
+                <p>However, the email you provided is incorrect (<%= ServletUtil.sanitizeHtmlWithRegex(StringEscapeUtils.escapeHtml(email.toLowerCase())) %>) and you will not receive a response.</p>
+            <% 
+                } 
+            %>
+            
+            <% if (ServletUtil.isAppPropertyTrue("enableFeedbackRetention")) { %>
+                <br><br>
+                <h3>Details of your feedback submission</h3>
+                <% 
+                    long feedbackId = -1;
+                    Object feedbackIdObj = request.getAttribute("feedback_id");
+                    if (feedbackIdObj instanceof String) {
+                        try {
+                            feedbackId = Long.parseLong((String)feedbackIdObj);
+                        } catch (NumberFormatException e) {
+                            // Log or handle the exception
+                        }
+                    }
+                    
+                    Feedback feedbackDetails = ServletUtil.getFeedback(feedbackId);
+                    
+                    if (feedbackDetails != null) {
+                %>
+                    <table border="0">
+                        <tr>
+                            <td align="right">Your Name:</td>
+                            <td valign="top"><%= StringEscapeUtils.escapeHtml(feedbackDetails.getName()) %></td>
+                        </tr>
+                        <tr>
+                            <td align="right">Your Email Address:</td>
+                            <td valign="top"><%= StringEscapeUtils.escapeHtml(feedbackDetails.getEmail()) %></td>
+                        </tr>
+                        <tr>
+                            <td align="right">Subject:</td>
+                            <td valign="top"><%= StringEscapeUtils.escapeHtml(feedbackDetails.getSubject()) %></td>
+                        </tr>
+                        <tr>
+                            <td align="right" valign="top">Question/Comment:</td>
+                            <td><%= StringEscapeUtils.escapeHtml(feedbackDetails.getMessage()) %></td>
+                        </tr>
+                    </table>
+                <% } %>
             <% } %>
         </div>
     </td>   
