@@ -236,33 +236,55 @@ public static boolean isValidUser(String user, String password) throws SQLExcept
 	 * @return user information
 	 * @throws SQLException
 	 */
-	public static User getUserInfo(String username) throws SQLException{
-		if (username == null || username.trim().length() == 0)
-			return null; 
-		
-		Connection connection = getConnection();
-		Statement statement = connection.createStatement();
-		ResultSet resultSet =statement.executeQuery("SELECT FIRST_NAME,LAST_NAME,ROLE FROM PEOPLE WHERE USER_ID = '"+ username +"' "); /* BAD - user input should always be sanitized */
-
-		String firstName = null;
-		String lastName = null;
-		String roleString = null;
-		if (resultSet.next()){
-			firstName = resultSet.getString("FIRST_NAME");
-			lastName = resultSet.getString("LAST_NAME");
-			roleString = resultSet.getString("ROLE");
-		}
-		
-		if (firstName == null || lastName == null)
-			return null;
-		
-		User user = new User(username, firstName, lastName);
-		
-		if (roleString.equalsIgnoreCase("admin"))
-			user.setRole(Role.Admin);
-		
-		return user;
+	public static User getUserInfo(String username) throws SQLException {
+	    if (username == null || username.trim().length() == 0)
+	        return null;
+	
+	    Connection connection = null;
+	    PreparedStatement statement = null;
+	    ResultSet resultSet = null;
+	    User user = null;
+	
+	    try {
+	        connection = getConnection();
+	        String query = "SELECT FIRST_NAME, LAST_NAME, ROLE FROM PEOPLE WHERE USER_ID = ?";
+	        statement = connection.prepareStatement(query);
+	        statement.setString(1, username);
+	        resultSet = statement.executeQuery();
+	
+	        String firstName = null;
+	        String lastName = null;
+	        String roleString = null;
+	        if (resultSet.next()) {
+	            firstName = resultSet.getString("FIRST_NAME");
+	            lastName = resultSet.getString("LAST_NAME");
+	            roleString = resultSet.getString("ROLE");
+	        }
+	
+	        if (firstName == null || lastName == null)
+	            return null;
+	
+	        user = new User(username, firstName, lastName);
+	
+	        if (roleString != null && roleString.equalsIgnoreCase("admin")) {
+	            user.setRole(Role.Admin);
+	        }
+	    } finally {
+	        // Close resources in a finally block
+	        if (resultSet != null) {
+	            resultSet.close();
+	        }
+	        if (statement != null) {
+	            statement.close();
+	        }
+	        if (connection != null) {
+	            connection.close();
+	        }
+	    }
+	
+	    return user;
 	}
+
 
 	/**
 	 * Get all accounts for the specified user
