@@ -531,15 +531,16 @@ public static boolean isValidUser(String user, String password) throws SQLExcept
 	}
 	
 	public static String changePassword(String username, String password) {
-		try {
-			Connection connection = getConnection();
-			Statement statement = connection.createStatement();
-			statement.execute("UPDATE PEOPLE SET PASSWORD = '"+ password +"' WHERE USER_ID = '"+username+"'");
-			return null;
-		} catch (SQLException e){
-			return e.toString();
-			
-		}
+	    try {
+	        Connection connection = getConnection();
+	        PreparedStatement statement = connection.prepareStatement("UPDATE PEOPLE SET PASSWORD = ? WHERE USER_ID = ?");
+	        statement.setString(1, password);
+	        statement.setString(2, username);
+	        statement.executeUpdate();
+	        return null;
+	    } catch (SQLException e){
+	        return e.toString();
+	    }
 	}
 
 	
